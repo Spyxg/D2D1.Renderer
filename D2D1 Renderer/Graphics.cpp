@@ -114,23 +114,23 @@ void Graphics::DrawSemiCircle(float x, float y, float radius, D2D1::ColorF color
 
 	D2D1_ELLIPSE ellipse = D2D1::Ellipse(D2D1::Point2F(x, y), radius, radius);
 
-	// Define the start and sweep angles for the semi-circle
+
 	float startAngle = 0.0f;
 	float sweepAngle = 180.0f;
 
 	ID2D1PathGeometry* pathGeometry = NULL;
-	factory->CreatePathGeometry(&pathGeometry); // Create the path geometry using the factory
+	factory->CreatePathGeometry(&pathGeometry);
 
 	ID2D1GeometrySink* sink = NULL;
 	pathGeometry->Open(&sink);
 
 	sink->SetFillMode(D2D1_FILL_MODE_WINDING);
 
-	D2D1_POINT_2F startPoint = D2D1::Point2F(x, y - radius); // Start point at the top center of the circle
+	D2D1_POINT_2F startPoint = D2D1::Point2F(x, y - radius);
 
 	sink->BeginFigure(startPoint, D2D1_FIGURE_BEGIN_FILLED);
 
-	// Arc segment
+
 	D2D1_ARC_SEGMENT arc;
 	arc.point = D2D1::Point2F(x, y - radius);
 	arc.size = D2D1::SizeF(radius, radius);

@@ -60,7 +60,7 @@ int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int
             graphics->DrawRoundedRectangle(500, 500, 500, 500, 125, 125, 1.0f);
 
             D2D1::ColorF semiCircleColor(0.0f, 0.0f, 0.0f, 1.0f);
-            graphics->DrawSemiCircle(500, 500, 100, semiCircleColor);
+            graphics->DrawSemiCircle(300, 300, 200, semiCircleColor);
 
             D2D1::ColorF triangleColor(0.0f, 0.0f, 0.0f, 1.0f);  // Red color (R, G, B, A)
             graphics->DrawTriangle(0.0f, 0.0f, 100.0f, 0.0f, 50.0f, 100.0f, triangleColor);
