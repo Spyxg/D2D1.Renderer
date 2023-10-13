@@ -1,6 +1,8 @@
 #include <windows.h>
 #include "Graphics.h"
 #include <dwrite.h>
+#include <map>
+#include <string>
 
 
 Graphics* graphics;
@@ -10,6 +12,15 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	if (uMsg == WM_DESTROY) { PostQuitMessage(0); return 0; }
 
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
+
+std::map<std::wstring, IDWriteTextFormat*> fontMap;
+
+void CreateFontAndAddToMap(IDWriteFactory* dwFactory, const std::wstring& fontName, IDWriteTextFormat** font)
+{
+    dwFactory->CreateTextFormat(fontName.c_str(), NULL, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 50.0f, L"", font);
+
+
 }
 
 int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
@@ -41,7 +52,13 @@ int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int
         return -1;
     }
 
+    IDWriteFactory* dwFactory = NULL;
+
+    CreateFontAndAddToMap(dwFactory, L"Arial", &fontMap[L"Arial"]);
+    CreateFontAndAddToMap(dwFactory, L"Times New Roman", &fontMap[L"Times New Roman"]);
+
     ShowWindow(windowhandle, nCmdShow);
+    HRESULT hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&dwFactory));
 
     MSG message;
     message.message = WM_NULL;
@@ -49,26 +66,36 @@ int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int
     while (message.message != WM_QUIT)
     {
         if (PeekMessage(&message, NULL, 0, 0, PM_REMOVE))
+        {
             DispatchMessage(&message);
+        }
         else
         {
-        //update
-
+            //update
             const WCHAR* textToRender = L"Hell yeah we have text";
-
             D2D1_RECT_F layoutRect = D2D1::RectF(100, 200, 600, 400.0f);
-
             D2D1::ColorF textColor = D2D1::ColorF(0.0f, 0.0f, 0.0f);
-            
-        //render
+
+            //render
             graphics->BeginDraw();
             graphics->ClearScreen(1.0f, 1.0f, 1.0);
-
-            graphics->DrawText(textToRender, layoutRect, textColor);
-
+            IDWriteTextFormat* fontToUse = fontMap[L"Times New Roman"];
+            graphics->DrawText(textToRender, layoutRect, textColor, fontToUse);
             graphics->EndDraw();
         }
     }
+        for (const auto& fontPair : fontMap)
+        {
+
+            fontPair.second->Release();
+        }
+
+        if (dwFactory)
+        {
+
+            dwFactory->Release();
+        }
+    
 
 
     delete graphics;

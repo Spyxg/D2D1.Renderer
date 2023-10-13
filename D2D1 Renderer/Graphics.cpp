@@ -198,7 +198,7 @@ void Graphics::FillRoundedRectangle(int x, int y, int width, int height, float r
 	renderTarget->FillRoundedRectangle(roundedRect, brush);
 }
 
-void Graphics::DrawText(const WCHAR* text, const D2D1_RECT_F& layoutRect, D2D1::ColorF textColor)
+void Graphics::DrawText(const WCHAR* text, const D2D1_RECT_F& layoutRect, D2D1::ColorF textColor, IDWriteTextFormat* textFormat)
 {
 	renderTarget->CreateSolidColorBrush(textColor, &brush);
 
@@ -209,4 +209,8 @@ void Graphics::DrawText(const WCHAR* text, const D2D1_RECT_F& layoutRect, D2D1::
 		layoutRect,
 		brush
 	);
+
+	SafeRelease(&brush);
 }
+
+
