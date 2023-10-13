@@ -53,7 +53,7 @@ void Graphics::DrawCircle(float x, float y, float radius, float r, float g, floa
 }
 void Graphics::DrawRectangle(int x, int y, int width, int height, int linewidth, D2D1::ColorF colour)
 {
-	renderTarget->CreateSolidColorBrush(D2D1::ColorF(1.0f, 0.0f, 0.0f, 1.0f), &brush);
+	renderTarget->CreateSolidColorBrush(D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f), &brush);
 
 	D2D1_RECT_F rect = { static_cast<float>(x), static_cast<float>(y), static_cast<float>(width + x), static_cast<float>(height + y) };
 
@@ -148,4 +148,20 @@ void Graphics::DrawSemiCircle(float x, float y, float radius, D2D1::ColorF color
 
 	SafeRelease(&pathGeometry);
 	SafeRelease(&sink);
+}
+
+void Graphics::FillRectangle(int x, int y, int width, int height, D2D1::ColorF color)
+{
+	renderTarget->CreateSolidColorBrush(color, &brush);
+
+	D2D1_RECT_F rect = { static_cast<float>(x), static_cast<float>(y), static_cast<float>(width + x), static_cast<float>(height + y) };
+	renderTarget->FillRectangle(rect, brush);
+}
+
+void Graphics::FillRoundedRectangle(int x, int y, int width, int height, float radiusX, float radiusY, D2D1::ColorF color)
+{
+	renderTarget->CreateSolidColorBrush(color, &brush);
+
+	D2D1_ROUNDED_RECT roundedRect = D2D1::RoundedRect(D2D1::RectF(static_cast<float>(x), static_cast<float>(y), static_cast<float>(width + x), static_cast<float>(height + y)), radiusX, radiusY);
+	renderTarget->FillRoundedRectangle(roundedRect, brush);
 }

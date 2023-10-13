@@ -62,10 +62,18 @@ int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int
             D2D1::ColorF semiCircleColor(0.0f, 0.0f, 0.0f, 1.0f);
             graphics->DrawSemiCircle(300, 300, 200, semiCircleColor);
 
+            D2D1::ColorF rectangleColor(0.0f, 0.0f, 0.0f, 1.0f);
+            graphics->DrawRectangle(200, 200, 100, 50, 3, rectangleColor);
+
+            D2D1::ColorF filledRectangleColor(0.0f, 0.0f, 0.0f, 1.0f);
+            graphics->FillRectangle(400, 400, 100, 50, filledRectangleColor);
+
+            D2D1::ColorF filledRoundedRectangleColor(0.0f, 0.0f, 0.0f, 1.0f);
+            graphics->FillRoundedRectangle(300, 300, 100, 80, 20, 20, filledRoundedRectangleColor);
+
             D2D1::ColorF triangleColor(0.0f, 0.0f, 0.0f, 1.0f);  // Red color (R, G, B, A)
             graphics->DrawTriangle(0.0f, 0.0f, 100.0f, 0.0f, 50.0f, 100.0f, triangleColor);
 
-            
             graphics->EndDraw();
         }
     }

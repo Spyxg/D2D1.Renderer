@@ -30,4 +30,6 @@ public:
 	void DrawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, D2D1::ColorF color);
 	void SetPosition(float x, float y, float radius);
 	void DrawSemiCircle(float x, float y, float radius, D2D1::ColorF color);
+	void FillRoundedRectangle(int x, int y, int width, int height, float radiusX, float radiusY, D2D1::ColorF color);
+	void FillRectangle(int x, int y, int width, int height, D2D1::ColorF color);
 };
