@@ -1,11 +1,28 @@
 #include "graphics.h"
 
+
 Graphics::Graphics()
 {
 	factory = NULL;
 	renderTarget = NULL;
 	brush = NULL;
+	dwriteFactory = NULL;
+	textFormat = NULL;
+
+	if (dwriteFactory) {
+		dwriteFactory->CreateTextFormat(
+			L"Arial",
+			NULL,
+			DWRITE_FONT_WEIGHT_NORMAL,
+			DWRITE_FONT_STYLE_NORMAL,
+			DWRITE_FONT_STRETCH_NORMAL,
+			20.f,
+			L"",
+			&textFormat
+		);
 }
+}
+
 Graphics::~Graphics()
 {
 	if (factory) factory->Release(); //this releases all com interfaces
@@ -13,9 +30,15 @@ Graphics::~Graphics()
 	if (brush) brush->Release();
 }
 
+
+
 bool Graphics::Init(HWND windowHandle)
 {
 	HRESULT res = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &factory);
+	if (res != S_OK) return false;
+
+	// Initialize DirectWrite Factory
+	res = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(dwriteFactory), reinterpret_cast<IUnknown**>(&dwriteFactory));
 	if (res != S_OK) return false;
 
 	RECT rect;
@@ -24,17 +47,28 @@ bool Graphics::Init(HWND windowHandle)
 	res = factory->CreateHwndRenderTarget(
 		D2D1::RenderTargetProperties(),
 		D2D1::HwndRenderTargetProperties(
-			windowHandle, D2D1::SizeU(rect.right, rect.bottom)),    // we essentially created a direct2d factory, to create the rendertarget and set it to the client area on our window
+			windowHandle, D2D1::SizeU(rect.right, rect.bottom)),
 		&renderTarget);
 
-	if (res != S_OK) return false;
+	// Initialize your text format here
+	if (dwriteFactory) {
+		dwriteFactory->CreateTextFormat(
+			L"Arial",  // Font family
+			NULL,  // Font collection (use NULL for the system font collection)
+			DWRITE_FONT_WEIGHT_NORMAL,
+			DWRITE_FONT_STYLE_NORMAL,
+			DWRITE_FONT_STRETCH_NORMAL,
+			16.0f,  // Font size
+			L"",  // Locale
+			&textFormat
+		);
+	}
 
-	res = renderTarget->CreateSolidColorBrush(D2D1::ColorF(0, 0, 0, 0), &brush);  // Call render targets CreateSolidColorBrush method, this method takes a colorf parameter (())
-	// and a pointer (->) to the ID2D1::SolidColorBrush you want to create		
-	if (res != S_OK) return false;
+	// ... Rest of your existing initialization code ...
 
 	return true;
 }
+
 
 
 
@@ -149,7 +183,6 @@ void Graphics::DrawSemiCircle(float x, float y, float radius, D2D1::ColorF color
 	SafeRelease(&pathGeometry);
 	SafeRelease(&sink);
 }
-
 void Graphics::FillRectangle(int x, int y, int width, int height, D2D1::ColorF color)
 {
 	renderTarget->CreateSolidColorBrush(color, &brush);
@@ -157,11 +190,23 @@ void Graphics::FillRectangle(int x, int y, int width, int height, D2D1::ColorF c
 	D2D1_RECT_F rect = { static_cast<float>(x), static_cast<float>(y), static_cast<float>(width + x), static_cast<float>(height + y) };
 	renderTarget->FillRectangle(rect, brush);
 }
-
 void Graphics::FillRoundedRectangle(int x, int y, int width, int height, float radiusX, float radiusY, D2D1::ColorF color)
 {
 	renderTarget->CreateSolidColorBrush(color, &brush);
 
 	D2D1_ROUNDED_RECT roundedRect = D2D1::RoundedRect(D2D1::RectF(static_cast<float>(x), static_cast<float>(y), static_cast<float>(width + x), static_cast<float>(height + y)), radiusX, radiusY);
 	renderTarget->FillRoundedRectangle(roundedRect, brush);
+}
+
+void Graphics::DrawText(const WCHAR* text, const D2D1_RECT_F& layoutRect, D2D1::ColorF textColor)
+{
+	renderTarget->CreateSolidColorBrush(textColor, &brush);
+
+	renderTarget->DrawText(
+		text,
+		wcslen(text),
+		textFormat,  // Specify the text format
+		layoutRect,
+		brush
+	);
 }

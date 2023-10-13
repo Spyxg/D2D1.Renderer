@@ -1,5 +1,7 @@
 #include <windows.h>
 #include "Graphics.h"
+#include <dwrite.h>
+
 
 Graphics* graphics;
 
@@ -52,10 +54,17 @@ int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int
         {
         //update
 
+            const WCHAR* textToRender = L"Hell yeah we have text";
 
+            D2D1_RECT_F layoutRect = D2D1::RectF(100, 200, 600, 400.0f);
+
+            D2D1::ColorF textColor = D2D1::ColorF(0.0f, 0.0f, 0.0f);
+            
         //render
             graphics->BeginDraw();
             graphics->ClearScreen(1.0f, 1.0f, 1.0);
+
+            graphics->DrawText(textToRender, layoutRect, textColor);
 
             graphics->EndDraw();
         }

@@ -1,12 +1,15 @@
 #pragma once
 #include <d2d1.h>
 #include <windows.h>
+#include <dwrite.h>
 
 class Graphics
 {
 	ID2D1Factory* factory;
 	ID2D1SolidColorBrush* brush;
 	ID2D1HwndRenderTarget* renderTarget;
+	IDWriteFactory* dwriteFactory;  // DirectWrite Factory
+	IDWriteTextFormat* textFormat;  // Text format
 
 	float centerX;
 	float centerY;
@@ -32,4 +35,7 @@ public:
 	void DrawSemiCircle(float x, float y, float radius, D2D1::ColorF color);
 	void FillRoundedRectangle(int x, int y, int width, int height, float radiusX, float radiusY, D2D1::ColorF color);
 	void FillRectangle(int x, int y, int width, int height, D2D1::ColorF color);
+
+	void DrawText(const WCHAR* text, const D2D1_RECT_F& layoutRect, D2D1::ColorF textColor);
+
 };
