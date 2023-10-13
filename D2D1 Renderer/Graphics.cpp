@@ -108,3 +108,44 @@ void Graphics::DrawTriangle(float x1, float y1, float x2, float y2, float x3, fl
 	// Release resources
 	SafeRelease(&pathGeometry);
 }
+void Graphics::DrawSemiCircle(float x, float y, float radius, D2D1::ColorF color)
+{
+	renderTarget->CreateSolidColorBrush(color, &brush);
+
+	D2D1_ELLIPSE ellipse = D2D1::Ellipse(D2D1::Point2F(x, y), radius, radius);
+
+	// Define the start and sweep angles for the semi-circle
+	float startAngle = 0.0f;
+	float sweepAngle = 180.0f;
+
+	ID2D1PathGeometry* pathGeometry = NULL;
+	factory->CreatePathGeometry(&pathGeometry); // Create the path geometry using the factory
+
+	ID2D1GeometrySink* sink = NULL;
+	pathGeometry->Open(&sink);
+
+	sink->SetFillMode(D2D1_FILL_MODE_WINDING);
+
+	D2D1_POINT_2F startPoint = D2D1::Point2F(x, y - radius); // Start point at the top center of the circle
+
+	sink->BeginFigure(startPoint, D2D1_FIGURE_BEGIN_FILLED);
+
+	// Arc segment
+	D2D1_ARC_SEGMENT arc;
+	arc.point = D2D1::Point2F(x, y - radius);
+	arc.size = D2D1::SizeF(radius, radius);
+	arc.rotationAngle = 0.0f;
+	arc.sweepDirection = D2D1_SWEEP_DIRECTION_CLOCKWISE;
+	arc.arcSize = D2D1_ARC_SIZE_SMALL;
+
+	sink->AddArc(arc);
+
+	sink->EndFigure(D2D1_FIGURE_END_CLOSED);
+
+	sink->Close();
+
+	renderTarget->DrawGeometry(pathGeometry, brush, 3.0f);
+
+	SafeRelease(&pathGeometry);
+	SafeRelease(&sink);
+}
