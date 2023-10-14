@@ -5,6 +5,12 @@
 #include <string>
 
 
+bool IsEnterKeyPressed()
+{
+
+    return GetAsyncKeyState(VK_RETURN) & 0x8000;
+}
+
 Graphics* graphics;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -53,8 +59,6 @@ int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int
 
     IDWriteFactory* dwFactory = NULL;
 
-
-
     ShowWindow(windowhandle, nCmdShow);
     HRESULT hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&dwFactory));
 
@@ -65,6 +69,8 @@ int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int
     CreateFontAndAddToMap(dwFactory, L"Tahoma", &fontMap[L"Tahoma"]);
     CreateFontAndAddToMap(dwFactory, L"Lato", &fontMap[L"Lato"]);
     CreateFontAndAddToMap(dwFactory, L"Consolas", &fontMap[L"Consolas"]);
+
+
 
     MSG message;
     message.message = WM_NULL;
@@ -77,17 +83,31 @@ int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int
         }
         else
         {
-            //update
-            const WCHAR* textToRender = L"Hell yeah we have text";
-            D2D1_RECT_F layoutRect = D2D1::RectF(100, 200, 600, 400.0f);
-            D2D1::ColorF textColor = D2D1::ColorF(0.0f, 0.0f, 0.0f);
+            if (IsEnterKeyPressed())
+            {
 
-            //render
-            graphics->BeginDraw();
-            graphics->ClearScreen(1.0f, 1.0f, 1.0);
-            IDWriteTextFormat* fontToUse = fontMap[L"Comic Sans"];
-            graphics->DrawText(textToRender, layoutRect, textColor, fontToUse);
-            graphics->EndDraw();
+                float x = 400.0f;  // Modify these values as needed
+                float y = 300.0f;
+                float radius = 50.0f;
+                float r = 1.0f;
+                float g = 0.0f;
+                float b = 0.0f;
+                float a = 1.0f;
+
+
+                //update
+               // const WCHAR* textToRender = L"JoJo has a small sack";
+               // D2D1_RECT_F layoutRect = D2D1::RectF(100, 200, 600, 400.0f);
+               // D2D1::ColorF textColor = D2D1::ColorF(0.0f, 0.0f, 0.0f);
+
+                //render
+                graphics->BeginDraw();
+                graphics->ClearScreen(1.0f, 1.0f, 1.0);
+                // IDWriteTextFormat* fontToUse = fontMap[L"Tahoma"];
+                // graphics->DrawText(textToRender, layoutRect, textColor, fontToUse);
+                graphics->DrawCircle(x, y, radius, r, g, b, a);
+                graphics->EndDraw();
+            }
         }
     }
     for (const auto& fontPair : fontMap)
