@@ -54,11 +54,13 @@ int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int
 
     IDWriteFactory* dwFactory = NULL;
 
-    CreateFontAndAddToMap(dwFactory, L"Arial", &fontMap[L"Arial"]);
-    CreateFontAndAddToMap(dwFactory, L"Times New Roman", &fontMap[L"Times New Roman"]);
+
 
     ShowWindow(windowhandle, nCmdShow);
     HRESULT hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&dwFactory));
+
+    CreateFontAndAddToMap(dwFactory, L"Arial", &fontMap[L"Arial"]);
+    CreateFontAndAddToMap(dwFactory, L"Times New Roman", &fontMap[L"Times New Roman"]);
 
     MSG message;
     message.message = WM_NULL;
@@ -84,18 +86,18 @@ int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int
             graphics->EndDraw();
         }
     }
-        for (const auto& fontPair : fontMap)
-        {
+    for (const auto& fontPair : fontMap)
+    {
 
-            fontPair.second->Release();
-        }
+        fontPair.second->Release();
+    }
 
-        if (dwFactory)
-        {
+    if (dwFactory)
+    {
 
-            dwFactory->Release();
-        }
-    
+        dwFactory->Release();
+    }
+
 
 
     delete graphics;
