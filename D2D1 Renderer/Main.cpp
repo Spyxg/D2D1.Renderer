@@ -4,6 +4,32 @@
 #include <map>
 #include <string>
 
+enum MouseAction {
+    LeftMouseClick,
+    RightMouseClick,
+    MiddleMouseClick,
+};
+
+void HandleMouseAction(MouseAction action) {
+    switch (action) {
+    case LeftMouseClick:
+        // Handle left mouse click action
+        // Add your code here
+        break;
+    case RightMouseClick:
+        // Handle right mouse click action
+        // Add your code here
+        break;
+    case MiddleMouseClick:
+        // Handle middle mouse click action
+        // Add your code here
+        break;
+        // Add more cases for additional mouse actions as needed
+    default:
+
+        break;
+    }
+}
 
 bool IsEnterKeyPressed()
 {
@@ -13,11 +39,44 @@ bool IsEnterKeyPressed()
 
 Graphics* graphics;
 
+std::map<int, int> keyMap;
+
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	if (uMsg == WM_DESTROY) { PostQuitMessage(0); return 0; }
+    if (uMsg == WM_DESTROY) {
+        PostQuitMessage(0);
+        return 0;
+    }
 
-	return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    if (uMsg == WM_KEYDOWN) {
+        int key = static_cast<int>(wParam);
+        if (keyMap[key] == 0) {
+            keyMap[key] = 1; // Key is clicked
+        }
+        else if (keyMap[key] == 1) {
+            keyMap[key] = 2; // Key is down
+        }
+       else if (uMsg == WM_LBUTTONDOWN) {
+ 
+        HandleMouseAction(LeftMouseClick);
+        }
+        else if (uMsg == WM_RBUTTONDOWN) {
+
+        HandleMouseAction(RightMouseClick);
+        }
+        else if (uMsg == WM_MBUTTONDOWN) {
+
+        HandleMouseAction(MiddleMouseClick);
+        }
+
+    }
+    else if (uMsg == WM_KEYUP) {
+        int key = static_cast<int>(wParam);
+        keyMap[key] = 0; 
+    }
+
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
 std::map<std::wstring, IDWriteTextFormat*> fontMap;
@@ -37,7 +96,9 @@ int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int
     windowclass.hInstance = hInstance;  // hInstance is typically passed to your WinMain or DllMain function.
     windowclass.lpfnWndProc = WindowProc;  //event handling procedure - Must add this for the procedure at the top
     windowclass.lpszClassName = L"MainWindow";
-    windowclass.style = CS_HREDRAW | CS_VREDRAW;
+    windowclass.style = CS_HREDRAW | CS_VREDRAW;\
+    
+    std::map<int, int> keyMap; // Create the key state map
 
     RegisterClassEx(&windowclass); //& = reference to class
 
