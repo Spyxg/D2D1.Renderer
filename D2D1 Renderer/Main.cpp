@@ -20,7 +20,6 @@ void CreateFontAndAddToMap(IDWriteFactory* dwFactory, const std::wstring& fontNa
 {
     dwFactory->CreateTextFormat(fontName.c_str(), NULL, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 50.0f, L"", font);
 
-
 }
 
 int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
@@ -61,6 +60,11 @@ int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int
 
     CreateFontAndAddToMap(dwFactory, L"Arial", &fontMap[L"Arial"]);
     CreateFontAndAddToMap(dwFactory, L"Times New Roman", &fontMap[L"Times New Roman"]);
+    CreateFontAndAddToMap(dwFactory, L"Calibri", &fontMap[L"Calibri"]);
+    CreateFontAndAddToMap(dwFactory, L"Comic Sans", &fontMap[L"Comic Sans"]);
+    CreateFontAndAddToMap(dwFactory, L"Tahoma", &fontMap[L"Tahoma"]);
+    CreateFontAndAddToMap(dwFactory, L"Lato", &fontMap[L"Lato"]);
+    CreateFontAndAddToMap(dwFactory, L"Consolas", &fontMap[L"Consolas"]);
 
     MSG message;
     message.message = WM_NULL;
@@ -81,7 +85,7 @@ int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int
             //render
             graphics->BeginDraw();
             graphics->ClearScreen(1.0f, 1.0f, 1.0);
-            IDWriteTextFormat* fontToUse = fontMap[L"Times New Roman"];
+            IDWriteTextFormat* fontToUse = fontMap[L"Comic Sans"];
             graphics->DrawText(textToRender, layoutRect, textColor, fontToUse);
             graphics->EndDraw();
         }
