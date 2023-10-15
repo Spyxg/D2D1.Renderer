@@ -4,6 +4,8 @@
 #include <map>
 #include <string>
 
+std::map<int, int> keyMap;
+
 enum MouseAction {
     LeftMouseClick,
     RightMouseClick,
@@ -11,35 +13,38 @@ enum MouseAction {
 };
 
 void HandleMouseAction(MouseAction action) {
+    int key = 0; // Initialize key variable
+
     switch (action) {
     case LeftMouseClick:
-        // Handle left mouse click action
-        // Add your code here
+        key = VK_LBUTTON;
         break;
     case RightMouseClick:
-        // Handle right mouse click action
-        // Add your code here
+        key = VK_RBUTTON;
         break;
     case MiddleMouseClick:
-        // Handle middle mouse click action
-        // Add your code here
+        key = VK_MBUTTON;
         break;
         // Add more cases for additional mouse actions as needed
     default:
-
         break;
+    }
+
+    // If a valid mouse action was provided, update the keyMap
+    if (key != 0) {
+        if (keyMap[key] == 0) {
+            keyMap[key] = 1; // Mouse button is clicked
+        }
+        else if (keyMap[key] == 1) {
+            keyMap[key] = 2; // Mouse button is down
+        }
     }
 }
 
-bool IsEnterKeyPressed()
-{
 
-    return GetAsyncKeyState(VK_RETURN) & 0x8000;
-}
 
 Graphics* graphics;
 
-std::map<int, int> keyMap;
 
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -57,23 +62,18 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         else if (keyMap[key] == 1) {
             keyMap[key] = 2; // Key is down
         }
-       else if (uMsg == WM_LBUTTONDOWN) {
- 
-        HandleMouseAction(LeftMouseClick);
-        }
-        else if (uMsg == WM_RBUTTONDOWN) {
-
-        HandleMouseAction(RightMouseClick);
-        }
-        else if (uMsg == WM_MBUTTONDOWN) {
-
-        HandleMouseAction(MiddleMouseClick);
-        }
-
     }
     else if (uMsg == WM_KEYUP) {
         int key = static_cast<int>(wParam);
-        keyMap[key] = 0; 
+        keyMap[key] = 0;
+    }
+    else if (uMsg == WM_LBUTTONDOWN) {
+        int key = VK_LBUTTON;
+        keyMap[key] = 1; // Left mouse button is clicked
+    }
+    else if (uMsg == WM_LBUTTONUP) {
+        int key = VK_LBUTTON;
+        keyMap[key] = 0; // Left mouse button is released
     }
 
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
@@ -97,8 +97,6 @@ int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int
     windowclass.lpfnWndProc = WindowProc;  //event handling procedure - Must add this for the procedure at the top
     windowclass.lpszClassName = L"MainWindow";
     windowclass.style = CS_HREDRAW | CS_VREDRAW;\
-    
-    std::map<int, int> keyMap; // Create the key state map
 
     RegisterClassEx(&windowclass); //& = reference to class
 
@@ -144,29 +142,31 @@ int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int
         }
         else
         {
-            if (IsEnterKeyPressed())
-            {
+            if (keyMap[VK_LBUTTON] == 1) {
+            
 
-                float x = 400.0f;  // Modify these values as needed
-                float y = 300.0f;
-                float radius = 50.0f;
-                float r = 1.0f;
+                float x = 50.0f;  // Modify these values as needed
+                float y = 50.0f;
+                float radius = 30.0f;
+                float r = 0.0f;
                 float g = 0.0f;
-                float b = 0.0f;
+                float b = 1.0f;  // Blue color
                 float a = 1.0f;
 
 
+
+
                 //update
-               // const WCHAR* textToRender = L"JoJo has a small sack";
-               // D2D1_RECT_F layoutRect = D2D1::RectF(100, 200, 600, 400.0f);
-               // D2D1::ColorF textColor = D2D1::ColorF(0.0f, 0.0f, 0.0f);
+               const WCHAR* textToRender = L"Gr33n has a small pp";
+               D2D1_RECT_F layoutRect = D2D1::RectF(100, 200, 600, 400.0f);
+               D2D1::ColorF textColor = D2D1::ColorF(0.0f, 0.0f, 0.0f);
 
                 //render
                 graphics->BeginDraw();
                 graphics->ClearScreen(1.0f, 1.0f, 1.0);
-                // IDWriteTextFormat* fontToUse = fontMap[L"Tahoma"];
-                // graphics->DrawText(textToRender, layoutRect, textColor, fontToUse);
-                graphics->DrawCircle(x, y, radius, r, g, b, a);
+                IDWriteTextFormat* fontToUse = fontMap[L"Tahoma"];
+                graphics->DrawText(textToRender, layoutRect, textColor, fontToUse);
+                //graphics->DrawCircle(x, y, radius, r, g, b, a);
                 graphics->EndDraw();
             }
         }

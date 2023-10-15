@@ -39,7 +39,7 @@ public:
 	void FillRoundedRectangle(int x, int y, int width, int height, float radiusX, float radiusY, D2D1::ColorF color);
 	void FillRectangle(int x, int y, int width, int height, D2D1::ColorF color);
 
-	
+
 
 	void DrawText(const WCHAR* text, const D2D1_RECT_F& layoutRect, D2D1::ColorF textColor, IDWriteTextFormat* textFormat);
 
